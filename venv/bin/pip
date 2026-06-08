@@ -1,0 +1,6 @@
+#!/media/giezer/CAEA0F42EA0F2A71/automacao_python/agente-youtube/venv/bin/python3
+import sys
+from pip._internal.cli.main import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())

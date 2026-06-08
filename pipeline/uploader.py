@@ -16,6 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys          # ✅ FIX 1: import no topo, fora do bloco
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
@@ -42,7 +43,9 @@ def _build_driver(headless: bool = False) -> webdriver.Chrome:
 
     service = Service(ChromeDriverManager().install())
     driver = webdriver.Chrome(service=service, options=options)
-    driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    driver.execute_script(
+        "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"
+    )
     return driver
 
 
@@ -55,7 +58,6 @@ def upload_to_youtube(
 ) -> bool:
     """
     Upload a video to YouTube Studio via browser automation.
-
     Returns True if upload was initiated successfully.
     """
     driver = _build_driver(headless)
@@ -107,13 +109,9 @@ def upload_to_youtube(
                 (By.XPATH, "//div[@id='title-textarea']//div[@contenteditable='true']")
             )
         )
-        # Clear existing text and type new title
         title_field.click()
         time.sleep(0.5)
-        title_field.send_keys("\u0001a")  # Ctrl+A equivalent in some contexts
-        import selenium.webdriver.common.keys as Keys
-        from selenium.webdriver.common.keys import Keys as K
-        title_field.send_keys(K.CONTROL + "a")
+        title_field.send_keys(Keys.CONTROL + "a")   # ✅ FIX 2: removido import duplicado/bugado
         title_field.send_keys(title)
         print(f"   📝 Título: {title}")
 
